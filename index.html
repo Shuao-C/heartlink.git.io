@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Chatbot</title>
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Cascadia Code', Arial, sans-serif;
+            background-color: #f7f6e6;
+        }
+ 
+        #leftPanel {
+            width: 25%; 
+            padding: 20px;
+            margin-top: 110px;
+            background-color: #f7f6e6;
+            box-shadow: 2px 0 5px rgba(212, 163, 115, 0.3);
+            display: flex;
+            flex-direction: column;
+            font-size: 0.85em; 
+            font-weight: normal; 
+            color: #9e6a81;
+        }
+ 
+        #descriptionArea {
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            font-weight: normal;
+            color: #9e6a81;
+        }
+ 
+        #sliderContainer {
+            margin-bottom: 20px;
+            font-size: 0.9em; 
+            font-weight: normal;
+            color: #9e6a81;
+        }
+ 
+        #sliderContainer label {
+            display: block;
+            margin-bottom: 5px;
+            color: #9e6a81;
+        }
+ 
+        #slider {
+            width: 100%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 12px; 
+            background: #c1d4ba;
+            outline: none;
+            opacity: 0.9;
+            transition: background 0.3s;
+            border-radius: 10px; 
+        }
+
+        #slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #afc67a;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+        }
+
+        #slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #afc67a;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+        }
+ 
+        #uploadArea {
+            margin-bottom: 20px;
+            color: #9e6a81;
+        }
+ 
+        #previewArea {
+            margin-top: 20px;
+            width: 100%;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px #d4a373;
+            background-color: #f7f6e6;
+            overflow: hidden;
+        }
+ 
+        #historyPanel {
+            flex-grow: 1;
+            margin-top: 20px;
+            overflow-y: auto;
+            border-top: 1px #ddd;
+            padding-top: 10px;
+            font-size: 0.9em; 
+            font-weight: normal;
+            color: #9e6a81;
+        }
+ 
+        #historyPanel h3 {
+            margin: 0;
+            margin-bottom: 10px;
+            margin-top: -13px;
+            font-size: 1.10em; 
+            font-weight: normal;
+            color: #9e6a81;
+        }
+ 
+        .history-item {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px #c1d4ba;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #f7f6e6;
+            font-size: 1.20em; 
+            font-weight: normal;
+            color: #9e6a81;
+        }
+ 
+        .history-item:hover {
+            background-color: #e6eed4;
+        }
+ 
+        #chatPanel {
+            width: 70%; 
+            display: flex;
+            margin-top: 110px;
+            flex-direction: column;
+            background-color: #f7f6e6;
+        }
+ 
+        #chatBox {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f7f6e6;
+            border-left: 1px solid #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+ 
+        .chat {
+            margin: 10px 0;
+        }
+ 
+        .user {
+            text-align: right;
+            color: #1f4e79; /* Deep blue color for user text */
+            font-family: 'Cascadia Code', Arial, sans-serif;
+            font-size: 1.0em;
+        }
+ 
+        .bot {
+            text-align: left;
+            color: black; /* Black color for bot text */
+            font-family: 'Cascadia Code', Arial, sans-serif;
+            font-size: 1.0em;
+        }
+ 
+        #inputArea {
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+ 
+        #userInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #d4a373;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+ 
+        #sendButton {
+            padding: 10px;
+            background-color: #87d7d8;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+ 
+        #sendButton:hover {
+            background-color: #74b5b6;
+        }
+      
+        #saveDescriptionButton {
+            padding: 6px;
+            background-color: #d2dfb5;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em; 
+            font-weight: normal;
+        }
+ 
+        #saveDescriptionButton:hover {
+            background-color: #afc67a;
+        }
+
+        #nextButton {
+            padding: 6px;
+            background-color: #d2dfb5; 
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em; 
+            font-weight: normal;
+            margin-left: 10px; 
+        }
+
+        #nextButton:hover {
+            background-color: #afc67a;
+        }
+ 
+        img, video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+  <body>
+    <div id="header" style="position: fixed; top: 20px; left: 20px; z-index: 10; display: flex; align-items: center;">
+        <h1 style="margin: 0; font-size: 2em; color: #9e6a81;">HeartLink</h1>
+        <img src="https://media.istockphoto.com/id/653486498/photo/nighttime-sky-with-clouds-and-bright-full-moon-with-shiny.jpg?s=612x612&w=0&k=20&c=U-iqz1S15AXzM2vn0S3wHvClzcX1Zqq2COvPlXgZMYI=" alt="Heart and Moon Decoration" style="width: 50px; height: 50px; margin-left: 10px; border-radius: 30px;">
+       </div> <!-- 关闭 header 的 div -->
+<div style="position: fixed; top: 70px; left: 20px;">
+    <h2 style="margin: 0; font-size: 1.2em; font-family: Californian FB; font-weight: normal; color: #9e6a81;">You didn't come back as scheduled, and that's what parting means</h2>
+</div>
+
+    <div id="leftPanel">
+        <div id="descriptionArea">
+            <label for="entityTitle">Your One :</label>
+            <textarea id="entityTitle" rows="2" style="width: 100%; margin-bottom: 10px; border-radius: 15px; font-size: 1.20em;"></textarea>
+            <label for="entityDescription">Personality & Stories</label>
+            <textarea id="entityDescription" rows="10" style="width: 100%; border-radius: 15px; font-size: 1.20em;"></textarea>
+            <button id="saveDescriptionButton" style="margin-top: 10px; font-size: 1.10em; width: 150px;">Save Description</button>
+            <button id="nextButton" style="margin-top: 10px; font-size: 1.10em; width: 150px;">Next</button> 
+        </div>
+        <div id="sliderContainer">
+            <label for="slider">Response (from predictable to erratic):</label>
+            <input type="range" id="slider" min="0.05" max="2" step="0.05" value="0.5">
+            <div id="sliderValue" style="font-size: 0.85em;">0.50</div>
+        </div>
+        
+        <div id="historyPanel">
+            <h3>Saved Descriptions</h3>
+            <div id="historyList"></div>
+        </div>
+        <div id="backgroundChange">
+            <label for="backgroundImageUpload" style="font-size: 0.85em;">Upload Chat Background Image:</label>
+            <input type="file" id="backgroundImageUpload" accept="image/*" style="width: 100px; border-radius: 5px; font-size: 0.85em;" onchange="this.blur();">
+        </div>
+    </div>
+ 
+    <div id="chatPanel">
+        <div id="chatBox"></div>
+        <div id="inputArea">
+            <input type="text" id="userInput" placeholder="Say something..." style="border-radius: 15px;">
+            <button id="sendButton">Send</button>
+        </div>
+    </div>
+ 
+    <script type="module">
+        import { marked } from "https://cdn.jsdelivr.net/npm/marked@13.0.3/lib/marked.esm.js";
+        import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.es.mjs";
+ 
+        const slider = document.getElementById('slider');
+        const sliderValue = document.getElementById('sliderValue');
+        const userInput = document.getElementById('userInput');
+        const chatBox = document.getElementById('chatBox');
+        const sendButton = document.getElementById('sendButton');
+        const entityTitle = document.getElementById('entityTitle');
+        const entityDescription = document.getElementById('entityDescription');
+        const saveDescriptionButton = document.getElementById('saveDescriptionButton');
+        const nextButton = document.getElementById('nextButton'); 
+        const historyList = document.getElementById('historyList');
+        const backgroundImageUpload = document.getElementById('backgroundImageUpload');
+        let session = null;
+        let descriptions = [];
+        let chatHistories = {};
+ 
+        if (!self.ai || !self.ai.languageModel) {
+            const errorMessage = document.createElement('div');
+            errorMessage.style.color = 'red';
+            errorMessage.innerHTML = `Your browser doesn't support the Prompt API. If you're on Chrome, join the <a href="https://developer.chrome.com/docs/ai/built-in#get_an_early_preview">Early Preview Program</a> to enable it.`;
+            document.body.prepend(errorMessage);
+            throw new Error('Prompt API not supported');
+        }
+ 
+        async function updateSession() {
+            session = await self.ai.languageModel.create({
+                temperature: parseFloat(slider.value),
+                topK: 40,
+                systemMessage: `You are roleplaying as the following character: ${entityTitle.value.trim()} - ${entityDescription.value.trim()}. Respond in the first person as if you are this character, using their personality, traits, and unique behaviors. Your responses should feel as if they come directly from this character, in a way that reflects their experiences and emotions.`
+            });
+        }
+ 
+        async function promptModel(promptText) {
+            if (!session) {
+                await updateSession();
+            }
+ 
+            appendChat('user', promptText);
+            const p = document.createElement('p');
+            p.classList.add('chat', 'bot');
+            p.textContent = 'Generating response...';
+            chatBox.appendChild(p);
+            chatBox.scrollTop = chatBox.scrollHeight;
+ 
+            try {
+                const fullPrompt = `You are ${entityTitle.value.trim()} - ${entityDescription.value.trim()}. Respond in character to the following message as if you are this character: "${promptText}"`;
+                const stream = await session.promptStreaming(fullPrompt);
+                let fullResponse = "";
+                p.innerHTML = "";
+                for await (const chunk of stream) {
+                    const trimmedChunk = chunk.trim();
+                    if (trimmedChunk.length > 0) {
+                        fullResponse = trimmedChunk;
+                        p.innerHTML = DOMPurify.sanitize(marked.parse(fullResponse));
+                    }
+                }
+                saveChatHistory(entityTitle.value.trim(), 'user', promptText);
+                saveChatHistory(entityTitle.value.trim(), 'bot', fullResponse);
+            } catch (error) {
+                p.textContent = `Error: ${error.message}`;
+            }
+        }
+ 
+        function appendChat(role, text) {
+            const chat = document.createElement('div');
+            chat.className = `chat ${role}`;
+            chat.textContent = text;
+            chatBox.appendChild(chat);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+ 
+        function saveDescription() {
+            const titleText = entityTitle.value.trim();
+            const descriptionText = entityDescription.value.trim();
+            if (titleText && descriptionText) {
+                let existingItem = descriptions.find(item => item.title === titleText);
+                if (existingItem) {
+                    existingItem.description = descriptionText;
+                } else {
+                    const descriptionItem = {
+                        id: descriptions.length,
+                        title: titleText,
+                        description: descriptionText
+                    };
+                    descriptions.push(descriptionItem);
+                    addDescriptionToHistory(descriptionItem);
+                }
+                entityTitle.value = "";
+                entityDescription.value = "";
+            }
+        }
+ 
+        function addDescriptionToHistory(descriptionItem) {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.textContent = descriptionItem.title;
+            historyItem.addEventListener('click', async () => {
+                entityTitle.value = descriptionItem.title;
+                entityDescription.value = descriptionItem.description;
+                await updateSession();
+                loadChatHistory(descriptionItem.title);
+            });
+            historyList.appendChild(historyItem);
+        }
+ 
+        function saveChatHistory(title, role, text) {
+            if (!chatHistories[title]) {
+                chatHistories[title] = [];
+            }
+            chatHistories[title].push({ role, text });
+        }
+ 
+        function loadChatHistory(title) {
+            chatBox.innerHTML = "";
+            if (chatHistories[title]) {
+                chatHistories[title].forEach(chat => {
+                    appendChat(chat.role, chat.text);
+                });
+            }
+        }
+ 
+        sendButton.addEventListener('click', async () => {
+            const prompt = userInput.value.trim();
+            if (prompt) {
+                userInput.value = "";
+                await promptModel(prompt);
+            }
+        });
+ 
+        slider.addEventListener('input', () => {
+            sliderValue.textContent = parseFloat(slider.value).toFixed(2);
+        });
+ 
+        saveDescriptionButton.addEventListener('click', saveDescription);
+
+        nextButton.addEventListener('click', () => {
+            entityTitle.value = "";
+            entityDescription.value = "";
+        });
+
+        // Change the chat background image using the file upload
+        backgroundImageUpload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const result = e.target.result;
+                    chatBox.style.backgroundImage = `url(${result})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Initialize session on page load
+        updateSession();
+    </script>
+</body>
+</html>
